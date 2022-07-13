@@ -4,22 +4,37 @@
   const THRESHOLD = 2
   const NUMBER_WORDS = 3
   let randomNum = 0 //Math.floor(Math.random() * numberWords)
+  let round = 0
   let reveal = false
   let cache = [...Array(words.length)].map(x => 0)
-  let unlearnedWords = words.filter((_x, i) => cache[i] < THRESHOLD)
-  let leftToLearn = unlearnedWords.length
+  let unlearnedWords = words.slice(0, NUMBER_WORDS)
+  let leftToLearn = NUMBER_WORDS
   let unlearnedIndex = randomNum
+  const findNextIndex = () => {
+    let index = unlearnedIndex + 1 > (NUMBER_WORDS * (round + 1)) - 1 ? NUMBER_WORDS * round : unlearnedIndex + 1
+    while (cache[index] === THRESHOLD) index += 1
+    return index
+  }
   const answer = (/** @type {boolean} */ answer) => {
     if (answer) cache[randomNum] += 1
     else cache[randomNum] = Math.max(0, cache[randomNum] - 1)
-    console.log(words.length, unlearnedWords.length, randomNum);
     cache = cache
-    console.log(cache)
-    unlearnedWords = words.filter((_x, i) => cache[i] < THRESHOLD)
-    randomNum = randomNum === NUMBER_WORDS + (words.length - unlearnedWords.length) - 1 ? (words.length - unlearnedWords.length) : randomNum + 1
-    unlearnedIndex = randomNum - (words.length - unlearnedWords.length)
-    leftToLearn = unlearnedWords.length
+    const newUnlearned = unlearnedWords.map(x => words.indexOf(x)).filter((x) => cache[x] < THRESHOLD)
+    console.log(newUnlearned.length);
+    if (newUnlearned.length > 0) {
+      leftToLearn = newUnlearned.length
+      randomNum = randomNum + 1 > (NUMBER_WORDS * (round + 1)) - 1 ? NUMBER_WORDS * round : randomNum + 1
+      unlearnedIndex = unlearnedIndex + 1 > NUMBER_WORDS - 1 ? 0 : unlearnedIndex + 1
+    } 
+    else {
+      round += 1
+      unlearnedWords = words.slice(round * NUMBER_WORDS, (round + 1) * NUMBER_WORDS)
+      randomNum = round * NUMBER_WORDS
+      unlearnedIndex = 0
+      leftToLearn = NUMBER_WORDS
+    }
     reveal = false
+    console.log(cache, randomNum, unlearnedIndex)
   }
 </script>
 
