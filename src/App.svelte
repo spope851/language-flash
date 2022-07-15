@@ -1,51 +1,97 @@
 <script>
   // import logo from './assets/svelte.png'
   import words from './data/words.json'
-  const THRESHOLD = 2
-  const NUMBER_WORDS = 3
+  let threshold = 2
+  let numberWords = 3
   let randomNum = 0 //Math.floor(Math.random() * numberWords)
   let round = 0
+  let mastered = false
   let reveal = false
   let cache = [...Array(words.length)].map(x => 0)
-  let unlearnedWords = words.slice(0, NUMBER_WORDS)
-  let leftToLearn = NUMBER_WORDS
+  let unlearnedWords = words.slice(0, numberWords)
+  let leftToLearn = numberWords
   let unlearnedIndex = randomNum
+  const changeNumberWords = (/** @type {number} */ newNum) => {
+    numberWords = newNum
+    unlearnedWords = words.slice(0, newNum)
+    leftToLearn = newNum
+  }
+  const changeThreshold = (/** @type {number} */ newNum) => {
+    threshold = newNum
+    unlearnedWords = words.slice(0, newNum)
+    leftToLearn = newNum
+  }
   const findNextUnlearnedIndex = (/** @type {number[]} */ currentWords) => {
-    let index = unlearnedIndex + 1 > NUMBER_WORDS - 1 ? 0 : unlearnedIndex + 1
-    while (cache[currentWords[index]] === THRESHOLD) {
-      if (index + 1 > NUMBER_WORDS - 1) index = 0
+    let index = unlearnedIndex + 1 > numberWords - 1 ? 0 : unlearnedIndex + 1
+    while (cache[currentWords[index]] === threshold) {
+      if (index + 1 > numberWords - 1) index = 0
       else index += 1
     }
     return index
   }
   const answer = (/** @type {boolean} */ answer) => {
-    if (answer) cache[randomNum] += 1
+    if (answer) {
+      cache[randomNum] += 1
+      if (cache[randomNum] === threshold) mastered = true
+    }
     else cache[randomNum] = Math.max(0, cache[randomNum] - 1)
     cache = cache
-    const currentWords = unlearnedWords.map(x => words.indexOf(x))
-    const newUnlearned = currentWords.filter((x) => cache[x] < THRESHOLD)
-    // console.log(newUnlearned.length);
-    if (newUnlearned.length > 0) {
-      leftToLearn = newUnlearned.length
-      randomNum = randomNum + 1 > (NUMBER_WORDS * (round + 1)) - 1 ? NUMBER_WORDS * round : randomNum + 1
-      unlearnedIndex = findNextUnlearnedIndex(currentWords)
-      randomNum = words.indexOf(words.find(word => word === unlearnedWords[unlearnedIndex]))
-    } 
-    else {
-      round += 1
-      unlearnedWords = words.slice(round * NUMBER_WORDS, (round + 1) * NUMBER_WORDS)
-      randomNum = round * NUMBER_WORDS
-      unlearnedIndex = 0
-      leftToLearn = NUMBER_WORDS
-    }
-    reveal = false
+    setTimeout(() => {
+      const currentWords = unlearnedWords.map(x => words.indexOf(x))
+      const newUnlearned = currentWords.filter((x) => cache[x] < threshold)
+      // console.log(newUnlearned.length);
+      if (newUnlearned.length > 0) {
+        leftToLearn = newUnlearned.length
+        randomNum = randomNum + 1 > (numberWords * (round + 1)) - 1 ? numberWords * round : randomNum + 1
+        unlearnedIndex = findNextUnlearnedIndex(currentWords)
+        randomNum = words.indexOf(words.find(word => word === unlearnedWords[unlearnedIndex]))
+      } 
+      else {
+        round += 1
+        unlearnedWords = words.slice(round * numberWords, (round + 1) * numberWords)
+        randomNum = round * numberWords
+        unlearnedIndex = 0
+        leftToLearn = numberWords
+      }
+      mastered = false
+      reveal = false
+    }, 300)
     // console.log(cache, randomNum, unlearnedIndex)
   }
 </script>
 
 <main>
+  <div id="info">
+    <h3>ROUND: {round + 1}</h3>
+    <h3>
+      STUDYING 
+      <select value={numberWords} on:change={e => changeNumberWords(Number(e.currentTarget.value))}>
+        <option value={3}>3</option> 
+        <option value={10}>10</option> 
+        <option value={25}>25</option>
+        <option value={50}>50</option>
+        <option value={75}>75</option>
+        <option value={100}>100</option>
+      </select>
+      WORDS PER ROUND
+    </h3>
+    <h3>
+      NEED SCORE OF
+      <select value={threshold} on:change={e => changeThreshold(Number(e.currentTarget.value))}>
+        <option value={1}>1</option> 
+        <option value={2}>2</option> 
+        <option value={3}>3</option> 
+        <option value={4}>4</option>
+        <option value={5}>5</option>
+        <option value={6}>6</option>
+      </select>
+      TO MASTER A WORD
+    </h3>
+  </div>
+
   <div id="word">
     <h1>{unlearnedWords[unlearnedIndex].pinyin}</h1>
+    <h2 class={mastered && 'mastered'}>SCORE: {cache[randomNum]} {#if mastered}&#128170;{/if}</h2>
   </div>
 
   <div id="answer">
@@ -56,13 +102,13 @@
       <button on:click={() => answer(false)}>NO</button>
     {:else}
       <button on:click={() => reveal = true}>
-        REVEAL
+        REVEAL DEFINITION
       </button>
     {/if}
   </div>
 
   <div>
-    <h6>{leftToLearn} words left to learn</h6>
+    <h6>{leftToLearn} words left this round</h6>
   </div>
 </main>
 
@@ -71,6 +117,19 @@
   :root {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  #info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: #ff3e00 1px solid;
+    max-width: 400px;
+    padding: 20px;
+  }
+
+  .mastered {
+    color: lightgreen;
   }
 
   button {
