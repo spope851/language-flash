@@ -1,4 +1,8 @@
-# Svelte + Vite
+# [Twitter thread](https://twitter.com/s_pop3/status/1547753107668381696?s=20&t=6MKikkiXNfZwK1LBuewldg) describing the project
+
+built this app for studying Mandarin vocab words, but it can easily be taylored to any other language you're able to get data for
+
+## Svelte + Vite
 
 This template should help get you started developing with Svelte in Vite.
 
