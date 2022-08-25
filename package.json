@@ -1,6 +1,6 @@
 {
 	"name": "language-flash",
-	"version": "0.0.3",
+	"version": "0.0.5",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -36,6 +36,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"language-flash": "^0.0.5",
 		"svelte2tsx": "^0.5.11"
 	}
 }

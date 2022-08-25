@@ -1,13 +1,18 @@
 <script lang="ts">
-    import words from '../data/words.json'
-    type Mode = 'pinyin' | 'traditional' | 'simplified'
-    const isModeType = (data: unknown): data is Mode => data === ('pinyin' || 'traditional' || 'simplified');
-    interface Word {
-      pinyin: string;
-      traditional: string;
-      simplified: string;
-      meaning: string;
+    import { Mandarin } from 'language-flash'
+    type Word = {
+            pinyin: string;
+            traditional: string;
+            simplified: string;
+            meaning: string;
     }
+    type Mode = 'pinyin' | 'traditional' | 'simplified' // TODO: update types when language is customized
+    const isModeType = (data: unknown): data is Mode => data === ('pinyin' || 'traditional' || 'simplified');
+    let customGui = 0
+    let language = 'Mandarin'
+    let newLanguage = ''
+    let words = Mandarin
+    let newWords = ''
     let threshold = 2
     let numberWords = 3
     let mode: Mode = 'pinyin'
@@ -15,10 +20,19 @@
     let round = 0
     let mastered = false
     let reveal = false
-    let cache = [...Array(words.length)].map(x => 0)
+    let cache = [...Array(words.length)].map(_x => 0)
     let unlearnedWords = words.slice(0, numberWords)
     let leftToLearn = numberWords
     let unlearnedIndex = randomNum
+    const customize = () => {
+      language = newLanguage
+      console.log(words);
+      words = JSON.parse(newWords)
+      unlearnedWords = words.slice(0, numberWords)
+      console.log(words);
+      
+      customGui = 0
+    }
     const changeNumberWords = (newNum: number) => {
       numberWords = newNum
       unlearnedWords = words.slice(0, newNum)
@@ -45,8 +59,8 @@
       else cache[randomNum] = Math.max(0, cache[randomNum] - 1)
       cache = cache
       setTimeout(() => {
-        const currentWords = unlearnedWords.map(x => words.indexOf(x))
-        const newUnlearned = currentWords.filter((x) => cache[x] < threshold)
+        const currentWords = unlearnedWords.map((x: Word[]) => words.indexOf(x))
+        const newUnlearned = currentWords.filter((x: any) => cache[x] < threshold)
         // console.log(newUnlearned.length);
         if (newUnlearned.length > 0) {
           leftToLearn = newUnlearned.length
@@ -70,8 +84,26 @@
   </script>
   
   <main>
+    {#if customGui}
+      <div id="info">
+        <input title="Language" placeholder="Language" on:change={(e) => newLanguage = e.currentTarget.value} style="margin-bottom: 20px"/>
+        <textarea placeholder="New words in valid Json" on:change={(e) => newWords = e.currentTarget.value}  style="margin-bottom: 20px"/>
+        <div id="title">
+          <button on:click={() => customize()} disabled={!newLanguage || !newWords}>UPDATE</button>
+          <button on:click={() => customGui = 0}>CANCEL</button>
+        </div>
+      </div>
+    {/if}
     <div id="info">
-      <h3>ROUND: {round + 1}</h3>
+      <div id="title">
+        <h3>YOU ARE LEARNING:</h3>
+        <h3>{language}</h3>
+      </div>
+      <button style="align-self: center;" on:click={() => customGui = 1}>CUSTOMIZE LANGUAGE</button>
+      <div id="title">
+        <h3>ROUND:</h3>
+        <h3>{round + 1}</h3>
+      </div>
       <h3>
         STUDYING 
         <select value={numberWords} on:change={e => changeNumberWords(Number(e.currentTarget.value))}>
@@ -135,6 +167,13 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
         Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
+
+    #title {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: -webkit-fill-available
+    }
   
     #info {
       display: flex;
@@ -143,6 +182,7 @@
       border: #ff3e00 1px solid;
       max-width: 400px;
       padding: 20px;
+      margin-bottom: 20px;
     }
   
     .mastered {
@@ -161,6 +201,12 @@
       width: 200px;
       font-variant-numeric: tabular-nums;
       cursor: pointer;
+    }
+
+    button:disabled,
+    button[disabled] {
+      background-color: lightgray;
+      color: gray;
     }
   
     main {

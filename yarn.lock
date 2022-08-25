@@ -1077,6 +1077,21 @@ kleur@^4.1.5:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-4.1.5.tgz#95106101795f7050c6c650f350c683febddb1780"
   integrity sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==
 
+language-flash@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/language-flash/-/language-flash-0.0.4.tgz#ce19abefad830d0a3506e39bb063ee62d3b7258e"
+  integrity sha512-6g1ezN4qpDL2Ok812goUqn4T4MECW/5FD3xuwbb2/QjAdrN+ci0VQBU8wNCA7VhFYHfSjtJF4Dcxebdf7Nx2sg==
+  dependencies:
+    svelte2tsx "^0.5.11"
+
+language-flash@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/language-flash/-/language-flash-0.0.5.tgz#61841d38c3a5adfb9584c5ac40592e86bca6f0f2"
+  integrity sha512-Vq8ikcUmwog3hDzUynzuP9a6RIYI196d0ecfc6udXcDWxqToDo8+FEgbpxX69tFoyS5PYOV9YCpQX1Nj+DfbPQ==
+  dependencies:
+    language-flash "^0.0.4"
+    svelte2tsx "^0.5.11"
+
 levn@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/levn/-/levn-0.4.1.tgz#ae4562c007473b932a6200d403268dd2fffc6ade"

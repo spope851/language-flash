@@ -1,13 +1,12 @@
-<script lang="ts">
-    type Mode = 'pinyin' | 'traditional' | 'simplified'
-    const isModeType = (data: unknown): data is Mode => data === ('pinyin' || 'traditional' || 'simplified');
-    interface Word {
-      pinyin: string;
-      traditional: string;
-      simplified: string;
-      meaning: string;
-    }
-    const words: Word[] = [
+<script context="module" lang="ts">
+      export type Word = {
+            pinyin: string;
+            traditional: string;
+            simplified: string;
+            meaning: string;
+      }
+
+      export const Mandarin: Word[] = [
       {
             "traditional": "一",
             "simplified": "一",
@@ -5445,6 +5444,10 @@
             "meaning": "lot, aggregate, all, gross, entirety, allness, shebang, caboodle, complete, bunch, sum, total, gamut, entire, det.: all, totality, whole,"
       }
     ]
+</script>
+<script lang="ts">
+    type Mode = 'pinyin' | 'traditional' | 'simplified'
+    const isModeType = (data: unknown): data is Mode => data === ('pinyin' || 'traditional' || 'simplified');
 
     let threshold = 2
     let numberWords = 3
@@ -5453,18 +5456,18 @@
     let round = 0
     let mastered = false
     let reveal = false
-    let cache = [...Array(words.length)].map(x => 0)
-    let unlearnedWords = words.slice(0, numberWords)
+    let cache = [...Array(Mandarin.length)].map(x => 0)
+    let unlearnedWords = Mandarin.slice(0, numberWords)
     let leftToLearn = numberWords
     let unlearnedIndex = randomNum
     const changeNumberWords = (newNum: number) => {
       numberWords = newNum
-      unlearnedWords = words.slice(0, newNum)
+      unlearnedWords = Mandarin.slice(0, newNum)
       leftToLearn = newNum
     }
     const changeThreshold = (newNum: number) => {
       threshold = newNum
-      unlearnedWords = words.slice(0, newNum)
+      unlearnedWords = Mandarin.slice(0, newNum)
       leftToLearn = newNum
     }
     const findNextUnlearnedIndex = (currentWords: number[]) => {
@@ -5483,19 +5486,19 @@
       else cache[randomNum] = Math.max(0, cache[randomNum] - 1)
       cache = cache
       setTimeout(() => {
-        const currentWords = unlearnedWords.map(x => words.indexOf(x))
+        const currentWords = unlearnedWords.map(x => Mandarin.indexOf(x))
         const newUnlearned = currentWords.filter((x) => cache[x] < threshold)
         // console.log(newUnlearned.length);
         if (newUnlearned.length > 0) {
           leftToLearn = newUnlearned.length
           randomNum = randomNum + 1 > (numberWords * (round + 1)) - 1 ? numberWords * round : randomNum + 1
           unlearnedIndex = findNextUnlearnedIndex(currentWords)
-          const newNum = words.find((word: Word) => word === unlearnedWords[unlearnedIndex])
-          if (newNum) randomNum = words.indexOf(newNum)
+          const newNum = Mandarin.find((word: Word) => word === unlearnedWords[unlearnedIndex])
+          if (newNum) randomNum = Mandarin.indexOf(newNum)
         } 
         else {
           round += 1
-          unlearnedWords = words.slice(round * numberWords, (round + 1) * numberWords)
+          unlearnedWords = Mandarin.slice(round * numberWords, (round + 1) * numberWords)
           randomNum = round * numberWords
           unlearnedIndex = 0
           leftToLearn = numberWords
