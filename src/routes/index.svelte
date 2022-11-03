@@ -6,8 +6,6 @@
             simplified: string;
             meaning: string;
     }
-    type Mode = 'pinyin' | 'traditional' | 'simplified' // TODO: update types when language is customized
-    const isModeType = (data: unknown): data is Mode => data === ('pinyin' || 'traditional' || 'simplified');
     let customGui = 0
     let language = 'Mandarin'
     let newLanguage = ''
@@ -15,7 +13,7 @@
     let newWords = ''
     let threshold = 2
     let numberWords = 3
-    let mode: Mode = 'pinyin'
+    let mode = 'pinyin'
     let randomNum = 0 //Math.floor(Math.random() * numberWords)
     let round = 0
     let mastered = false
@@ -130,7 +128,7 @@
       </h3>
       <h3>
         MODE:
-        <select value={mode} on:change={e => {if (isModeType(e.currentTarget.value)) mode = e.currentTarget.value}}>
+        <select value={mode} on:change={e => mode = e.currentTarget.value }>
           <option value={'pinyin'}>pinyin</option> 
           <option value={'traditional'}>traditional</option> 
           <option value={'simplified'}>simplified</option>
