@@ -1,6 +1,19 @@
 {
 	"name": "language-flash",
-	"version": "0.0.12",
+	"version": "1.0.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/spope851/language-flash.git"
+	},
+	"bugs": {
+		"url": "https://github.com/spope851/language-flash/issues"
+	},
+	"author": {
+		"name" : "spencer pope",
+		"email" : "spope851@gmail.com",
+		"url" : "https://spenpo.com"
+	  },
+	"license": "ISC",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
