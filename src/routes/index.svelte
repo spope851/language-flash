@@ -6,13 +6,13 @@
     simplified: string;
     meaning: string;
   }
+  
+  export let vocabData: Word[] = Mandarin
 
   const GREEN = '#4CAF50'
   const LIGHT_GREEN = '#99ee99'
   const RED = '#FF5252'
   const LIGHT_RED = '#ee9999'
-  
-  export let vocabData: Word[] = Mandarin
 
   let threshold = 2
   let numberWords = 3
@@ -131,22 +131,20 @@
   </div>
 
   <div id="word">
-    <h1 class={mastered ? 'mastered' : ''}>{unlearnedWords[unlearnedIndex][mode]}</h1>
-    <div id="score">
-      {#if mastered} 
-        <h1 class="animate__animated animate__fadeOutUp">&#128170;</h1>
-      {/if} 
-      <h2 id="current-score">
-        SCORE: <span id="score-number">{cache[randomNum]}</span>
-      </h2>
-      <h2 id="point-marker">
-        {#if correct}
-          <h4 class="animate__animated animate__fadeOutUp" style={`color: ${GREEN};`}>+1</h4>
-        {:else if incorrect}
-          <h4 class="animate__animated animate__fadeOutUp" style={`color: ${RED};`}>-1</h4>
-        {/if}
-      </h2>
-    </div>
+    <h1 style="grid-column-start: 2; margin-bottom: 0px;" class={mastered ? 'mastered' : ''}>{unlearnedWords[unlearnedIndex][mode]}</h1>
+    {#if mastered} 
+      <h1 style="margin: 0px;" class="animate__animated animate__fadeOutUp">&#128170;</h1>
+    {/if} 
+    <h2 id="current-score">
+      SCORE: <span id="score-number">{cache[randomNum]}</span>
+    </h2>
+    <span id="point-marker">
+      {#if correct}
+        <h4 class="animate__animated animate__fadeOutUp" style={`color: ${GREEN}; margin: 0px;`}>+1</h4>
+      {:else if incorrect}
+        <h4 class="animate__animated animate__fadeOutUp" style={`color: ${RED}; margin: 0px;`}>-1</h4>
+      {/if}
+    </span>
   </div>
 
   <div
@@ -202,20 +200,23 @@
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
 
-  #score {
+  #word {
     display: grid;
     line-height: 36px;
-    grid-template-columns: repeat(3, 150px);
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     margin: auto;
     width: fit-content;
   }
 
   #current-score {
+    grid-row-start: 2;
     grid-column-start: 2;
     grid-column-end: 3;
   }
 
   #point-marker {
+    grid-row-start: 2;
     grid-column-start: 3;
     grid-column-end: 4;
     text-align: left;
