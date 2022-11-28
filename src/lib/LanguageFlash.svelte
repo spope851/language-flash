@@ -71,7 +71,10 @@
 
 <main>
   <div id="info">
-    <h3>ROUND: {round + 1}</h3>
+    <div style="display: flex; justify-content: space-between; width: 100%; align-items: baseline;">
+      <h3>ROUND: {round + 1}</h3>
+      <h6 style="margin: 0px;">{leftToLearn} WORDS LEFT TO MASTER</h6>
+    </div>
     <h3>
       STUDYING 
       <select value={numberWords} on:change={e => changeNumberWords(Number(e.currentTarget.value))}>
@@ -121,10 +124,6 @@
         DEFINITION
       </button>
     {/if}
-  </div>
-
-  <div>
-    <h6>{leftToLearn} words left this round</h6>
   </div>
 </main>
 

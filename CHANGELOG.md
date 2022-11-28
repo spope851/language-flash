@@ -1,3 +1,9 @@
+## [v1.0.2] - 2022-11-22
+
+### Added
+
+- move words left header
+
 ## [v1.0.0] - 2022-11-22
 
 ### Added
