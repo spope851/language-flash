@@ -84,6 +84,12 @@
   }
 </script>
 
+<head>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+</head>
 <main>
   <div id="info">
     <div style="display: flex; justify-content: space-between; width: 100%; align-items: baseline;">
