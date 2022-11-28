@@ -6,6 +6,11 @@
     simplified: string;
     meaning: string;
   }
+
+  const GREEN = '#4CAF50'
+  const LIGHT_GREEN = '#99ee99'
+  const RED = '#FF5252'
+  const LIGHT_RED = '#ee9999'
   
   export let vocabData: Word[] = Mandarin
 
@@ -16,6 +21,8 @@
   let round = 0
   let mastered = false
   let reveal = false
+  let correct = false
+  let incorrect = false
   let cache = [...Array(vocabData.length)].map(x => 0)
   let unlearnedWords = vocabData.slice(0, numberWords)
   let leftToLearn = numberWords
@@ -40,10 +47,16 @@
   }
   const answer = (answer: boolean) => {
     if (answer) {
+      reveal = false
+      correct = true
       cache[randomNum] += 1
       if (cache[randomNum] === threshold) mastered = true
     }
-    else cache[randomNum] = Math.max(0, cache[randomNum] - 1)
+    else {
+      reveal = false
+      incorrect = true
+      cache[randomNum] = Math.max(0, cache[randomNum] - 1)
+    }
     cache = cache
     setTimeout(() => {
       const currentWords = unlearnedWords.map(x => vocabData.indexOf(x))
@@ -64,7 +77,8 @@
         leftToLearn = numberWords
       }
       mastered = false
-      reveal = false
+      correct = false
+      incorrect = false
     }, 300)
     // console.log(cache, randomNum, unlearnedIndex)
   }
@@ -112,16 +126,63 @@
 
   <div id="word">
     <h1 class={mastered ? 'mastered' : ''}>{unlearnedWords[unlearnedIndex][mode]}</h1>
-    <h2 style="line-height: 36px;">SCORE: {#if mastered} &#128170; {:else} {cache[randomNum]} {/if}</h2>
+    <div id="score">
+      {#if mastered} 
+        <h1 class="animate__animated animate__fadeOutUp">&#128170;</h1>
+      {/if} 
+      <h2 id="current-score">
+        SCORE: <span id="score-number">{cache[randomNum]}</span>
+      </h2>
+      <h2 id="point-marker">
+        {#if correct}
+          <h4 class="animate__animated animate__fadeOutUp" style={`color: ${GREEN};`}>+1</h4>
+        {:else if incorrect}
+          <h4 class="animate__animated animate__fadeOutUp" style={`color: ${RED};`}>-1</h4>
+        {/if}
+      </h2>
+    </div>
   </div>
 
-  <div id="answer" style="min-height: 200px; display: flex; flex-direction: column; justify-content: space-evenly;">
+  <div
+    id="answer"
+    style="min-height: 200px; display: flex; flex-direction: column; justify-content: space-evenly;"
+  >
     {#if reveal}
-      <h3 style="margin: 0px 20px; align-self: center;">{unlearnedWords[unlearnedIndex].meaning}</h3>
-      <button style="border-color: #4CAF50; background-color: #99ee99; color: #000; align-self: center;" on:click={() => answer(true)}>CORRECT</button>
-      <button style="border-color: #FF5252; background-color: #ee9999; color: #000; align-self: center;" on:click={() => answer(false)}>INCORRECT</button>
-    {:else}
-      <button on:click={() => reveal = true} style="align-self: center;">
+      <h3
+        class="animate__animated animate__fadeIn"
+        style="margin: 0px 20px; align-self: center;"
+      >
+        {unlearnedWords[unlearnedIndex].meaning}
+      </h3>
+      <button
+        class="animate__animated animate__fadeInUp" 
+        style={`
+          border-color: ${GREEN};
+          background-color: ${LIGHT_GREEN};
+          color: #000;
+          align-self: center;
+        `}
+        on:click={() => answer(true)}
+      >
+        CORRECT
+      </button>
+      <button
+        class="animate__animated animate__fadeInUp"
+        style={`
+          border-color: ${RED};
+          background-color: ${LIGHT_RED};
+          color: #000;
+          align-self: center;
+        `}
+        on:click={() => answer(false)}
+      >
+        INCORRECT
+      </button>
+    {:else if !incorrect && !correct}
+      <button
+        class="animate__animated animate__fadeInUp"
+        on:click={() => reveal = true} style="align-self: center;"
+      >
         DEFINITION
       </button>
     {/if}
@@ -133,6 +194,25 @@
   :root {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  #score {
+    display: grid;
+    line-height: 36px;
+    grid-template-columns: repeat(3, 150px);
+    margin: auto;
+    width: fit-content;
+  }
+
+  #current-score {
+    grid-column-start: 2;
+    grid-column-end: 3;
+  }
+
+  #point-marker {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    text-align: left;
   }
 
   #info {
